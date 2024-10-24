@@ -95,8 +95,9 @@ def process_images(rank, world_size, args, model_name, input_files, output_csv):
 
         output = model.generate(**inputs, temperature=1, top_p=0.9, max_new_tokens=512)
         decoded_output = processor.decode(output[0])[len(prompt):]
-
-        add_novel_entry(image_path, decoded_output)
+        
+        #TODO extract video_name and frame, update arguments
+        add_novel_entry(video_name, frame_name, decoded_output)
 
         pbar.update(1)
         pbar.set_postfix({"Last File": filename})
@@ -109,16 +110,17 @@ Base.metadata.create_all(ENGINE)
 
 class ImageContents(Base):
     __tablename__ = "image_contents"
-    file_name = Column("file_name", String, primary_key=True)
-    image_content = Column("image_content", String, primary_key=True)
+    video_name = Column("video_name", String, primary_key=True)
+    frame_name = Column("frame_name", String, primary_key=True)
+    image_content = Column("image_content", String)
 
     def __init__(self, file_name, image_content):
         self.file_name = file_name
         self.image_content = image_content
 
-def add_novel_entry(file_name, image_content):
+def add_novel_entry(video_name, frame_name, image_content):
     with Session(ENGINE) as session:
-        entry = ImageContents(file_name, image_content)
+        entry = ImageContents(video_name, frame_name, image_content)
         already_in_db = session.query(exists().where(ImageContents.file_name == file_name)).scalar()
         if not already_in_db:
             session.add(entry)
@@ -130,7 +132,7 @@ def main():
     parser = argparse.ArgumentParser(description="Multi-GPU Image Captioning")
     parser.add_argument("--hf_token", required=True, help="Hugging Face API token")
     parser.add_argument("--input_path", required=True, help="Path to input image folder")
-    parser.add_argument("--output_path", required=True, help="Path to output CSV folder")
+    parser.add_argument("--output_path", required=True, help="Path to output CSV folder") #TODO take this as the sqlite db path
     parser.add_argument("--num_gpus", type=int, required=True, help="Number of GPUs to use")
     parser.add_argument("--corrupt_folder", default="corrupt_images", help="Folder to move corrupt images")
     args = parser.parse_args()
