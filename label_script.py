@@ -11,6 +11,13 @@ from PIL import Image
 from tqdm.auto import tqdm
 from transformers import MllamaForConditionalGeneration, MllamaProcessor
 
+from sqlalchemy import create_engine, String, Column
+from sqlalchemy.orm import Session, declarative_base
+from sqlalchemy.sql import exists
+
+DB = "sqlite:///ImageContents.db" #TODO make argument for main
+ENGINE = create_engine(DB, echo=True) #TODO echo false?
+
 USER_TEXT = """We put head cameras on babies to study what they see in their everyday interactions. The following images were recorded by head cameras on babies. We are interested in the objects in a baby's environment- your task is to label the objects you see. Babies move their heads rapidly sometimes, creating blurry images. We want you to try to say what objects are in the videos even though sometimes it will be hard.
 
 To ensure you provide object names of the kind we want, we have a set of instructions that we want you to follow. To check on how well you are following these instructions, we have included some images that have already been coded by these instructions. Workers whose answers do not match the pre-coded answers will not be approved. We know some pictures are dark or blurry, make an honest effort and you will be approved. Just do your best and feedback on our instructions is very much welcomed.***
@@ -73,8 +80,6 @@ def process_images(rank, world_size, args, model_name, input_files, output_csv):
     start_idx = rank * chunk_size
     end_idx = start_idx + chunk_size if rank < world_size - 1 else len(input_files)
 
-    results = []
-
     pbar = llama_progress_bar(total=end_idx - start_idx, desc=f"GPU {rank}", position=rank)
 
     for filename in input_files[start_idx:end_idx]:
@@ -90,24 +95,44 @@ def process_images(rank, world_size, args, model_name, input_files, output_csv):
 
         output = model.generate(**inputs, temperature=1, top_p=0.9, max_new_tokens=512)
         decoded_output = processor.decode(output[0])[len(prompt):]
-
-        results.append((filename, decoded_output))
+        
+        #TODO extract video_name and frame, update arguments
+        add_novel_entry(video_name, frame_name, decoded_output)
 
         pbar.update(1)
         pbar.set_postfix({"Last File": filename})
 
     pbar.close()
 
-    with open(output_csv, 'w', newline='', encoding='utf-8') as f:
-        writer = csv.writer(f)
-        writer.writerow(['Filename', 'Caption'])
-        writer.writerows(results)
+# Database operations and definition
+Base = declarative_base() #TODO not sure where to put these
+Base.metadata.create_all(ENGINE)
+
+class ImageContents(Base):
+    __tablename__ = "image_contents"
+    video_name = Column("video_name", String, primary_key=True)
+    frame_name = Column("frame_name", String, primary_key=True)
+    image_content = Column("image_content", String)
+
+    def __init__(self, file_name, image_content):
+        self.file_name = file_name
+        self.image_content = image_content
+
+def add_novel_entry(video_name, frame_name, image_content):
+    with Session(ENGINE) as session:
+        entry = ImageContents(video_name, frame_name, image_content)
+        already_in_db = session.query(exists().where(ImageContents.file_name == file_name)).scalar()
+        if not already_in_db:
+            session.add(entry)
+            session.commit()
+            return True
+        return False
 
 def main():
     parser = argparse.ArgumentParser(description="Multi-GPU Image Captioning")
     parser.add_argument("--hf_token", required=True, help="Hugging Face API token")
     parser.add_argument("--input_path", required=True, help="Path to input image folder")
-    parser.add_argument("--output_path", required=True, help="Path to output CSV folder")
+    parser.add_argument("--output_path", required=True, help="Path to output CSV folder") #TODO take this as the sqlite db path
     parser.add_argument("--num_gpus", type=int, required=True, help="Number of GPUs to use")
     parser.add_argument("--corrupt_folder", default="corrupt_images", help="Folder to move corrupt images")
     args = parser.parse_args()
