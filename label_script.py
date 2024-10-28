@@ -145,8 +145,8 @@ def main():
     start_time = time.time()
 
     # Find and move corrupt images
-    corrupt_folder = os.path.join(args.input_path, args.corrupt_folder)
-    find_and_move_corrupt_images(args.input_path, corrupt_folder)
+    # corrupt_folder = os.path.join(args.input_path, args.corrupt_folder)
+    # find_and_move_corrupt_images(args.input_path, corrupt_folder)
 
     # Get list of remaining (non-corrupt) image files
     input_files = [f for f in os.listdir(args.input_path) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
