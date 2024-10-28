@@ -14,23 +14,25 @@ from PIL import Image
 from tqdm.auto import tqdm
 from transformers import MllamaForConditionalGeneration, MllamaProcessor
 
-USER_TEXT = """We put head cameras on babies to study what they see in their everyday interactions. The following images were recorded by head cameras on babies. We are interested in the objects in a baby's environment- your task is to label the objects you see. Babies move their heads rapidly sometimes, creating blurry images. We want you to try to say what objects are in the videos even though sometimes it will be hard.
+# USER_TEXT = """We put head cameras on babies to study what they see in their everyday interactions. The following images were recorded by head cameras on babies. We are interested in the objects in a baby's environment- your task is to label the objects you see. Babies move their heads rapidly sometimes, creating blurry images. We want you to try to say what objects are in the videos even though sometimes it will be hard.
 
-To ensure you provide object names of the kind we want, we have a set of instructions that we want you to follow. To check on how well you are following these instructions, we have included some images that have already been coded by these instructions. Workers whose answers do not match the pre-coded answers will not be approved. We know some pictures are dark or blurry, make an honest effort and you will be approved. Just do your best and feedback on our instructions is very much welcomed.***
+# To ensure you provide object names of the kind we want, we have a set of instructions that we want you to follow. To check on how well you are following these instructions, we have included some images that have already been coded by these instructions. Workers whose answers do not match the pre-coded answers will not be approved. We know some pictures are dark or blurry, make an honest effort and you will be approved. Just do your best and feedback on our instructions is very much welcomed.***
 
-INSTRUCTIONS
+# INSTRUCTIONS
 
-1. We are not interested in people and body parts, so do not name them. We are interested in their clothing and accessories, however. So in the image below, do NOT label the face or nose but DO label the,glasses, earring, etc.
-2. The pictures in this set are all from one baby and are ordered in time, so if you can recognize an object in a picture that is blurry in the later one (because the baby moved her head!) please label the blurry object in the same way that you did in an earlier picture.
-3. Note if there is a blurry then clear picture of the same scene, youcannot go back. They must be done in order.
-4. Name objects with one every day noun -the kinds of object names that babies learn.
-5. Typically the label should be one word, for example -- “spoon” --not baby spoon, or silver spoon.
-6. Some scenes will show babies looking at books or screens or furniture with images on them. You can label both the object (book, TV, chair) and the images being displayed on that object.
-7. We are interested in the objects the baby is likely to be attending to, so name the individual objects first and background objects only if there are no other objects in view. The picture below has lots of objects so you should not name the background objects of floor and wall.
-8. This next image has few objects so you can name background objects like the window and carpet. Evenif the scene is sparse, with just one object, try to name at least three things
-9. If there are multiple objects in the same object category only namethe object once (letters). Because there are few foreground objects, you should also label the wall here.
-10. Remember, People and Body parts are NOT objects.
-"""
+# 1. We are not interested in people and body parts, so do not name them. We are interested in their clothing and accessories, however. So in the image below, do NOT label the face or nose but DO label the,glasses, earring, etc.
+# 2. The pictures in this set are all from one baby and are ordered in time, so if you can recognize an object in a picture that is blurry in the later one (because the baby moved her head!) please label the blurry object in the same way that you did in an earlier picture.
+# 3. Note if there is a blurry then clear picture of the same scene, youcannot go back. They must be done in order.
+# 4. Name objects with one every day noun -the kinds of object names that babies learn.
+# 5. Typically the label should be one word, for example -- “spoon” --not baby spoon, or silver spoon.
+# 6. Some scenes will show babies looking at books or screens or furniture with images on them. You can label both the object (book, TV, chair) and the images being displayed on that object.
+# 7. We are interested in the objects the baby is likely to be attending to, so name the individual objects first and background objects only if there are no other objects in view. The picture below has lots of objects so you should not name the background objects of floor and wall.
+# 8. This next image has few objects so you can name background objects like the window and carpet. Evenif the scene is sparse, with just one object, try to name at least three things
+# 9. If there are multiple objects in the same object category only namethe object once (letters). Because there are few foreground objects, you should also label the wall here.
+# 10. Remember, People and Body parts are NOT objects.
+# """
+
+USER_TEXT = "List all the objects seen in the image. Do not write anything else, just list the objects seen."
 
 def is_image_corrupt(image_path):
     try:
