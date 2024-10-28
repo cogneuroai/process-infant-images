@@ -95,21 +95,33 @@ def process_images(rank, world_size, args, model_name, input_files, output_csv):
     for filename in input_files[start_idx:end_idx]:
         image_path = os.path.join(args.input_path, filename)
         image = get_image(image_path)
+        parent_folder_name = Path(image_path).parent.name
+        video_name = parent_folder_name
+        frame_name = filename
+        out = db.q(f"""SELECT * from annotations where video_name='{video_name}' and frame_name='{frame_name}'""")
+        if len(out)==0:
+            conversation = [
+                {"role": "user", "content": [{"type": "image"}, {"type": "text", "text": USER_TEXT}]}
+            ]
 
-        conversation = [
-            {"role": "user", "content": [{"type": "image"}, {"type": "text", "text": USER_TEXT}]}
-        ]
+            prompt = processor.apply_chat_template(conversation, add_special_tokens=False, add_generation_prompt=True, tokenize=False)
+            inputs = processor(image, prompt, return_tensors="pt").to(model.device)
 
-        prompt = processor.apply_chat_template(conversation, add_special_tokens=False, add_generation_prompt=True, tokenize=False)
-        inputs = processor(image, prompt, return_tensors="pt").to(model.device)
+            output = model.generate(**inputs, temperature=1, top_p=0.9, max_new_tokens=512)
+            # decoded_output = processor.decode(output[0], clean_up_tokenization_spaces=True, skip_special_tokens=True)[len(prompt):]
+            label = ''.join(processor.decode(output[0], clean_up_tokenization_spaces=True, skip_special_tokens=True).split('\n\n')[2:])
 
-        output = model.generate(**inputs, temperature=1, top_p=0.9, max_new_tokens=512)
-        decoded_output = processor.decode(output[0])[len(prompt):]
+            # results.append((filename, decoded_output))
+            try:
+                annot_table = db.t.annotations
+                annot_table.insert({'video_name': video_name, 'frame_name': frame_name, 'label': label})
+            except:
+                print(f'Entry made by another process for {video_name=} and {frame_name=}')
 
-        results.append((filename, decoded_output))
-
-        pbar.update(1)
-        pbar.set_postfix({"Last File": filename})
+            pbar.update(1)
+            pbar.set_postfix({"Last File": filename})
+        else:
+            print(f"Image already annotated for video_name='{video_name}' and frame_name='{frame_name}'")
 
     pbar.close()
 
