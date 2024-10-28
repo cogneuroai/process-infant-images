@@ -33,6 +33,16 @@ from transformers import MllamaForConditionalGeneration, MllamaProcessor
 # """
 
 USER_TEXT = "List all the objects seen in the image. Do not write anything else, just list the objects seen."
+DB_LOC = '/N/slate/demistry/llama-3.2/process-infant-images/test.db'
+db = Database(DB_LOC)
+TABLES =L(db.tables).map(lambda x: x.name)
+
+if 'annotations' not in TABLES:
+    db.create_table('annotations', columns={
+    'video_name': str,
+    'frame_name': str,
+    'label': str
+}, pk = ('video_name', 'frame_name'))
 
 def is_image_corrupt(image_path):
     try:
