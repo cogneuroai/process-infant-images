@@ -150,6 +150,7 @@ def main():
 
     # Get list of remaining (non-corrupt) image files
     input_files = [f for f in os.listdir(args.input_path) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
+    input_files = L(input_files).shuffle()
 
     print(f"\n🦙 Processing {len(input_files)} images using {args.num_gpus} GPUs...")
 
