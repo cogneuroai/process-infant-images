@@ -79,7 +79,9 @@ def process_images(rank, world_size, args, model_name, input_files):
         parent_folder_name = Path(image_path).parent.name
         video_name = parent_folder_name
         frame_name = filename
+        db = Database(DB_LOC)
         out = db.q(f"""SELECT * from annotations where video_name='{video_name}' and frame_name='{frame_name}'""")
+        db.close()
         if len(out)==0:
             conversation = [
                 {"role": "user", "content": [{"type": "image"}, {"type": "text", "text": USER_TEXT}]}
@@ -94,10 +96,13 @@ def process_images(rank, world_size, args, model_name, input_files):
 
             # results.append((filename, decoded_output))
             try:
+                db = Database(DB_LOC)
                 annot_table = db.t.annotations
                 annot_table.insert({'video_name': video_name, 'frame_name': frame_name, 'label': label})
-            except:
-                print(f'Entry made by another process for {video_name=} and {frame_name=}')
+            except Exception as e:
+                print(f"Couldn't insert as, {e}")
+            finally:
+                db.close()
 
             pbar.update(1)
             pbar.set_postfix({"Last File": filename})
