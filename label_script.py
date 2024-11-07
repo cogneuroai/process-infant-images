@@ -90,8 +90,7 @@ def process_images(rank, world_size, args, model_name, input_files):
             prompt = processor.apply_chat_template(conversation, add_special_tokens=False, add_generation_prompt=True, tokenize=False)
             inputs = processor(image, prompt, return_tensors="pt").to(model.device)
 
-            output = model.generate(**inputs, temperature=1, top_p=0.9, max_new_tokens=512)
-            # decoded_output = processor.decode(output[0], clean_up_tokenization_spaces=True, skip_special_tokens=True)[len(prompt):]
+            output = model.generate(**inputs, temperature=0.5, top_p=0.9, max_new_tokens=512)
             label = ''.join(processor.decode(output[0], clean_up_tokenization_spaces=True, skip_special_tokens=True).split('\n\n')[2:])
 
             # results.append((filename, decoded_output))
