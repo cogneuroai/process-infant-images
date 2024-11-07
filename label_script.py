@@ -61,7 +61,7 @@ def llama_progress_bar(total, desc, position=0):
     bar_format = "{desc}: |{bar}| {percentage:3.0f}% [{n_fmt}/{total_fmt}, {rate_fmt}{postfix}]"
     return tqdm(total=total, desc=desc, position=position, bar_format=bar_format, ascii="🦙·")
 
-def process_images(rank, world_size, args, model_name, input_files, output_csv):
+def process_images(rank, world_size, args, model_name, input_files):
     model = MllamaForConditionalGeneration.from_pretrained(model_name, device_map=f"cuda:{rank}", torch_dtype=torch.bfloat16, token=args.hf_token)
     processor = MllamaProcessor.from_pretrained(model_name, token=args.hf_token)
 
@@ -106,10 +106,6 @@ def process_images(rank, world_size, args, model_name, input_files, output_csv):
 
     pbar.close()
 
-    with open(output_csv, 'w', newline='', encoding='utf-8') as f:
-        writer = csv.writer(f)
-        writer.writerow(['Filename', 'Caption'])
-        writer.writerows(results)
 
 def main():
     parser = argparse.ArgumentParser(description="Multi-GPU Image Captioning")
