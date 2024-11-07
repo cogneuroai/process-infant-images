@@ -13,6 +13,7 @@ from PIL import Image
 from tqdm.auto import tqdm
 from transformers import MllamaForConditionalGeneration, MllamaProcessor
 
+USER_TEXT = "List up to ten objects seen in the image. Do not write anything else, just list the objects seen."
 # USER_TEXT = """We put head cameras on babies to study what they see in their everyday interactions. The following images were recorded by head cameras on babies. We are interested in the objects in a baby's environment- your task is to label the objects you see. Babies move their heads rapidly sometimes, creating blurry images. We want you to try to say what objects are in the videos even though sometimes it will be hard.
 
 # To ensure you provide object names of the kind we want, we have a set of instructions that we want you to follow. To check on how well you are following these instructions, we have included some images that have already been coded by these instructions. Workers whose answers do not match the pre-coded answers will not be approved. We know some pictures are dark or blurry, make an honest effort and you will be approved. Just do your best and feedback on our instructions is very much welcomed.***
