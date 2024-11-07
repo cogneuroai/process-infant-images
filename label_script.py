@@ -147,6 +147,7 @@ def main():
 
     for p in processes:
         p.join()
+        p.close()
 
     end_time = time.time()
     total_time = end_time - start_time
