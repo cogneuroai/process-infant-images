@@ -139,8 +139,9 @@ def main():
     processes = []
 
     for rank in range(args.num_gpus):
-        output_csv = os.path.join(args.output_path, f"captions_gpu_{rank}.csv")
-        p = mp.Process(target=process_images, args=(rank, args.num_gpus, args, model_name, input_files, output_csv))
+        # output_csv = os.path.join(args.output_path, f"captions_gpu_{rank}.csv")
+        # p = mp.Process(target=process_images, args=(rank, args.num_gpus, args, model_name, input_files, output_csv))
+        p = mp.Process(target=process_images, args=(rank, args.num_gpus, args, model_name, input_files))
         p.start()
         processes.append(p)
 
