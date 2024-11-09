@@ -98,6 +98,7 @@ def process_images(rank, world_size, args, model_name, input_files):
                 db = Database(DB_LOC)
                 annot_table = db.t.annotations
                 annot_table.insert({'video_name': video_name, 'frame_name': frame_name, 'label': label})
+                time.sleep(0.1)
             except Exception as e:
                 print(f"Couldn't insert as, {e}")
             finally:
