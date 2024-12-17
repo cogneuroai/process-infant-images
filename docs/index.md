@@ -1,6 +1,6 @@
-# Welcome to MkDocs
+# process-infant-images
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+To run the documentation locally read below,
 
 ## Commands
 
@@ -15,3 +15,11 @@ For full documentation visit [mkdocs.org](https://www.mkdocs.org).
     docs/
         index.md  # The documentation homepage.
         ...       # Other markdown pages, images and other files.
+
+## Video processed so far
+
+* [X] 030FD
+* [X] 031HW
+* [X] 032SR
+* [X] 046TE
+* [X] 047MS
