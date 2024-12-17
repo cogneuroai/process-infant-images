@@ -21,5 +21,14 @@ To run the documentation locally read below,
 * [X] 030FD
 * [X] 031HW
 * [X] 032SR
+* [ ] 033SE (running rn)
+* [ ] 036MR
+* [ ] 037SM
+* [ ] 038RB
+* [ ] 039ED
+* [ ] 041EC
+* [ ] 042MB
+* [ ] 043MP
+* [ ] 045NA
 * [X] 046TE
 * [X] 047MS
