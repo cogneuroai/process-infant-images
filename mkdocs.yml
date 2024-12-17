@@ -1,2 +1,6 @@
 site_name: process-infant-images
 theme: material
+
+markdown_extensions:
+  - pymdownx.tasklist:
+      custom_checkbox: true
