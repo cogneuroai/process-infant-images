@@ -22,9 +22,9 @@ To run the documentation locally read below,
 * [X] 031HW
 * [X] 032SR
 * [X] 033SE
-* [ ] 036MR (running rn)
-* [ ] 037SM
-* [ ] 038RB
+* [X] 036MR
+* [X] 037SM
+* [ ] 038RB (running rn)
 * [ ] 039ED
 * [ ] 041EC
 * [ ] 042MB
