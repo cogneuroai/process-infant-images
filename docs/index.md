@@ -24,8 +24,8 @@ To run the documentation locally read below,
 * [X] 033SE
 * [X] 036MR
 * [X] 037SM
-* [ ] 038RB (running rn)
-* [ ] 039ED
+* [X] 038RB
+* [ ] 039ED (running rn)
 * [ ] 041EC
 * [ ] 042MB
 * [ ] 043MP
