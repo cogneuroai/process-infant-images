@@ -1,5 +1,8 @@
 site_name: process-infant-images
-theme: material
+theme:
+  name: material
+  features:
+    - navigation.tabs
 
 markdown_extensions:
   - pymdownx.tasklist:
