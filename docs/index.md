@@ -1,4 +1,4 @@
-# process-infant-images
+# Home
 
 To run the documentation locally read below,
 
