@@ -1,5 +1,10 @@
 # Meetings
 
+## 01/01/2025
+
+1. The annotation of all the frames is finished.
+2. Results from all the databases is merged into a single master database, and it can be found in `/N/project/infant_image_statistics/annotation_results/master.db`
+
 ## 12/28/2024
 
 1. Labelling process has been quite slow, with our current estimates it would take over 1000 hours to finish the annotation of the entire dataset (refer the [Video Frames](https://indiana-my.sharepoint.com/:x:/r/personal/demistry_iu_edu/Documents/Video%20frames.xlsx?d=w6415a16dccb944239204d0afc245d83b&csf=1&web=1&e=MSOy40) excel file).
