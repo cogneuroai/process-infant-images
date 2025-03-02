@@ -1,5 +1,13 @@
 # Meetings
 
+## 01/17/2025
+
+1. Frame count mismatch
+2. Subtitle segments is not equal to frames annotated by the LLM
+3. 3-5 mins of segments should be the ideal duration of an episode
+4. Visual world is very stable (meaning things do not change of extended periods of time)
+5. Frequency/duration of episode
+
 ## 01/01/2025
 
 1. The annotation of all the frames is finished.
